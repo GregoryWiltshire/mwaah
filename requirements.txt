@@ -1,0 +1,6 @@
+git+https://github.com/apache/airflow-client-python@2.2.0#egg=apache-airflow-client
+boto3
+requests[socks]
+pysocks
+pydantic
+pytest
