@@ -2,7 +2,7 @@ import boto3
 import json
 import requests
 import base64
-from model import DagList
+from mwaacli.model import DagList
 from airflow_client.client.model.dag_run import DAGRun
 from datetime import datetime
 import re
@@ -46,19 +46,28 @@ class MWAACLI:
     
     def new_dagrun(self, dag_run :DAGRun) -> DAGRun:
         cmd = 'dags trigger'
-        if dag_run.conf:
+        if dag_run.get('conf'):
             cmd += f""" --conf '{json.dumps(dag_run.conf)}'"""
         if dag_run.get('execution_date'):
             cmd += f""" --exec-date '{dag_run.execution_date}'"""
-        if dag_run.dag_run_id:
+        if dag_run.get('dag_run_id'):
             cmd += f""" --run-id '{dag_run.dag_run_id}'"""
         cmd += f""" '{dag_run.dag_id}'"""
         data = self.post_command(cmd)
-        # return data
-        regexp = r'(?m)(?:.+\nCreated <DagRun )([a-zA-Z0-9\-\_.]+) @ ([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}[+-][0-9]{2}:[0-9]{2}): (.+), externally triggered: (True|False)>'
-        r = re.compile(regexp)
-        _, execution_date, dag_run_id, externally_triggered = r.findall(data.stdout)[0]
+        new_dagrun_data = parse_new_dagrun(data)
         execution_date = datetime.fromisoformat(execution_date)
         return DAGRun()._new_from_openapi_data(
-            **{**dag_run.to_dict(), **{'execution_date': execution_date, 'externally_triggered': externally_triggered}}
+            **{**dag_run.to_dict(), **new_dagrun_data}
         )
+
+
+def parse_new_dagrun(data: MWAAData) -> dict:
+    regexp = r'(?m)(?:.+\nCreated <DagRun )([a-zA-Z0-9\-\_.]+) @ ([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}[+-][0-9]{2}:[0-9]{2}): (.+), externally triggered: (True|False)>'
+    r = re.compile(regexp)
+    dag_id, execution_date, dag_run_id, externally_triggered = r.findall(data.stdout)[0]
+    return {
+        'execution_date': execution_date,
+        'externally_triggered': externally_triggered,
+        'dag_id': dag_id,
+        'dag_run_id': dag_run_id,
+    }

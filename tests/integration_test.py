@@ -1,12 +1,17 @@
 import pytest
+from dotenv import load_dotenv
 import os
-from mwaa import MWAACLI
+import boto3
+from mwaacli.mwaa import MWAACLI
 from airflow_client.client.model.dag_run import DAGRun
 from datetime import datetime
 
+
 @pytest.fixture
 def cli() -> MWAACLI:
-    return MWAACLI(name=os.environ['MWAA_ENVIRONMENT_NAME'])
+    load_dotenv()
+    print(os.environ['AWS_DEFAULT_REGION'])
+    return MWAACLI(os.environ['MWAA_ENVIRONMENT_NAME'], boto3.client('mwaa'))
 
 def test_get_dags(cli: MWAACLI):
     print(cli.get_dags())
