@@ -1,3 +1,4 @@
 .tox/
 .venv/
 .pytest_cache/
+mwaacli/__pycache__/
