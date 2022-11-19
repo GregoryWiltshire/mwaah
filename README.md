@@ -2,7 +2,7 @@
 Python Client for running Apache Airflow CLI commands on AWS MWAA (Managed Workflows for Apache Airflow) instances.  
 https://docs.aws.amazon.com/mwaa/latest/userguide/airflow-cli-command-reference.html
 
-# Supported Apache Airflow CLI commands
+# (currently) Supported Apache Airflow CLI commands
 | Version | Command                  | Implemented | Integration Test |
 |---------|--------------------------|-------------|------------------|
 | v2.2.2  | dags list                |     ✅      |       ✅         |
