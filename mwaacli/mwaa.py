@@ -1,50 +1,70 @@
-import boto3
-import json
-import requests
 import base64
-from mwaacli.model import DagList
+import json
+from datetime import datetime, timedelta
+
+import boto3
+import requests
 from airflow_client.client.model.dag_run import DAGRun
-from datetime import datetime
-import re
+from airflow_client.client.model.dag_state import DagState
+
+from mwaacli.model import DagList
+
 
 class MWAAData:
     def __init__(self, resp):
-        self.stdout = base64.b64decode(resp.json()['stdout']).decode('utf8')
-        self.stderr = base64.b64decode(resp.json()['stderr']).decode('utf8')
+        self.stdout = base64.b64decode(
+            resp.json()['stdout']
+        ).decode('utf8').strip()
+        self.stderr = base64.b64decode(
+            resp.json()['stderr']
+        ).decode('utf8').strip()
+        self.raw_stdout = base64.b64decode(resp.json()['stdout']).decode('utf8')
         if 'airflow.exceptions' in self.stderr:
             raise Exception(self.stderr)
+
     def json(self) -> dict:
         return json.loads(self.stdout)
 
+
 class MWAACLI:
-    def __init__(self, name, client=boto3.client('mwaa')):
-        self.client = client
+    def __init__(self, name, mwaa_client=None, proxies=None):
+        if mwaa_client:
+            self.client = mwaa_client
+        else:
+            self.client = boto3.client('mwaa')
         self.name = name
-        self.token = self.get_token()
+        self.proxies = proxies
+        self.__token_expiration__ = None
+        self.__token__ = None
 
     def get_token(self) -> dict:
-        return self.client.create_cli_token(Name=self.name)
+        if self.__token__:
+            if self.__token_expiration__ > datetime.now():
+                return self.__token__
+        self.__token__ = self.client.create_cli_token(Name=self.name)
+        self.__token_expiration__ = datetime.now() + timedelta(minutes=1)
+        return self.__token__
 
     def post_command(self, cmd: str) -> MWAAData:
-        host = f"""https://{self.token['WebServerHostname']}/aws_mwaa/cli"""
+        host = f"""https://{self.get_token()['WebServerHostname']}/aws_mwaa/cli"""
         resp = requests.post(
             host,
             headers={
-            'Authorization': 'Bearer ' + self.token['CliToken'],
-            'Content-Type': 'text/plain'
+                'Authorization': 'Bearer ' + self.get_token()['CliToken'],
+                'Content-Type': 'text/plain'
             },
-            proxies={'https': 'socks5://0:8080'},
+            proxies=self.proxies,
             data=cmd,
             timeout=60
         )
         resp.raise_for_status()
         return MWAAData(resp)
-    
+
     def get_dags(self) -> DagList:
         data = self.post_command('dags list --output json')
         return DagList(__root__=data.json())
-    
-    def new_dagrun(self, dag_run :DAGRun) -> DAGRun:
+
+    def new_dagrun(self, dag_run: DAGRun):
         cmd = 'dags trigger'
         if dag_run.get('conf'):
             cmd += f""" --conf '{json.dumps(dag_run.conf)}'"""
@@ -53,21 +73,24 @@ class MWAACLI:
         if dag_run.get('dag_run_id'):
             cmd += f""" --run-id '{dag_run.dag_run_id}'"""
         cmd += f""" '{dag_run.dag_id}'"""
-        data = self.post_command(cmd)
-        new_dagrun_data = parse_new_dagrun(data)
-        execution_date = datetime.fromisoformat(execution_date)
-        return DAGRun()._new_from_openapi_data(
-            **{**dag_run.to_dict(), **new_dagrun_data}
+        self.post_command(cmd)
+
+    def get_dag_state(self, dag_id: str, execution_date: datetime) -> DagState:
+        data = self.post_command(
+            """dags state '{}' '{}'""".format(dag_id, execution_date.isoformat())
         )
+        return DagState(data.stdout)
 
+    def pause_dag(self, dag_id: str):
+        self.post_command("""dags pause '{}'""".format(dag_id))
 
-def parse_new_dagrun(data: MWAAData) -> dict:
-    regexp = r'(?m)(?:.+\nCreated <DagRun )([a-zA-Z0-9\-\_.]+) @ ([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}[+-][0-9]{2}:[0-9]{2}): (.+), externally triggered: (True|False)>'
-    r = re.compile(regexp)
-    dag_id, execution_date, dag_run_id, externally_triggered = r.findall(data.stdout)[0]
-    return {
-        'execution_date': execution_date,
-        'externally_triggered': externally_triggered,
-        'dag_id': dag_id,
-        'dag_run_id': dag_run_id,
-    }
+    def unpause_dag(self, dag_id: str):
+        self.post_command("""dags unpause '{}'""".format(dag_id))
+
+    def get_version(self) -> str:
+        return self.post_command("""version""").stdout
+
+    # returns DOT representation of DAG
+    def show_dag(self, dag_id) -> str:
+        raw_str = self.post_command("""dags show '{}'""".format(dag_id)).raw_stdout
+        return ' '.join(raw_str.split('\x1b[0m')[4].split())  # split by control code, whitespace

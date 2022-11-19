@@ -1,5 +1,7 @@
-from pydantic import BaseModel
 from typing import List
+
+from pydantic import BaseModel
+
 
 class Dag(BaseModel):
     dag_id: str
@@ -7,6 +9,7 @@ class Dag(BaseModel):
     owner: str
     paused: bool
 
+
 class DagList(BaseModel):
-     __root__: List[Dag]
+    __root__: List[Dag]
 
