@@ -8,3 +8,23 @@ testpaths = [
     "mwaacli",
     "tests",
 ]
+
+[project]
+name = "mwaacli"
+version = "0.0.1"
+authors = [
+  { name="Gregory Wiltshire", email="mellon.greg@gmail.com" },
+]
+description = "Python Client for Apache CLI on AWS Managed Airflow"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/GregoryWiltshire/mwaacli-python"
