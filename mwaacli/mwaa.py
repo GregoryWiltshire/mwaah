@@ -1,6 +1,7 @@
 import base64
 import json
 from datetime import datetime, timedelta
+from typing import Union
 
 import boto3
 import requests
@@ -75,11 +76,14 @@ class MWAACLI:
         cmd += f""" '{dag_run.dag_id}'"""
         self.post_command(cmd)
 
-    def get_dag_state(self, dag_id: str, execution_date: datetime) -> DagState:
+    def get_dag_state(self, dag_id: str, execution_date: datetime) -> Union[DagState, None]:
         data = self.post_command(
             """dags state '{}' '{}'""".format(dag_id, execution_date.isoformat())
         )
-        return DagState(data.stdout)
+        state_str = data.raw_stdout.split('\x1b[0m')[-1].strip()
+        if state_str == 'None':
+            return None
+        return DagState(state_str)
 
     def pause_dag(self, dag_id: str):
         self.post_command("""dags pause '{}'""".format(dag_id))
@@ -93,4 +97,4 @@ class MWAACLI:
     # returns DOT representation of DAG
     def show_dag(self, dag_id) -> str:
         raw_str = self.post_command("""dags show '{}'""".format(dag_id)).raw_stdout
-        return ' '.join(raw_str.split('\x1b[0m')[4].split())  # split by control code, whitespace
+        return raw_str.split('\x1b[0m')[4].strip()  # split by control code, whitespace
