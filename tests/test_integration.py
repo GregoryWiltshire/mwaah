@@ -37,10 +37,12 @@ def dag_run(dag_id) -> str:
     )
 
 
+@pytest.mark.integration
 def test_new_dagrun(cli: MWAACLI, dag_run):
     cli.new_dagrun(dag_run)
 
 
+@pytest.mark.integration
 def test_pause_unpause_get_dags(cli: MWAACLI, dag_id):
     cli.pause_dag(dag_id)
     dags = [dag for dag in cli.get_dags().__root__ if dag.dag_id == dag_id]
@@ -52,26 +54,32 @@ def test_pause_unpause_get_dags(cli: MWAACLI, dag_id):
     cli.pause_dag(dag_id)
 
 
+@pytest.mark.integration
 def test_get_version(cli: MWAACLI):
     assert cli.get_version() == '2.2.2'
 
 
+@pytest.mark.integration
 def test_show_dag(cli: MWAACLI, dag_id):
     dot = cli.show_dag(dag_id)
     assert dot.startswith(f'digraph {dag_id}')
     assert dot.endswith('}')
 
 
+@pytest.mark.integration
 def test_get_dag_state(cli: MWAACLI, dag_run):
     state = cli.get_dag_state(dag_run.dag_id, dag_run.execution_date)
     print(state)
 
 
+@pytest.mark.integration
 def test_get_dag_state_None(cli: MWAACLI, dag_run):
     state = cli.get_dag_state(dag_run.dag_id, datetime.now())
     assert state is None
 
 
+@pytest.mark.slow
+@pytest.mark.integration
 def test_token_refreshes(cli: MWAACLI):
     cli.get_version()
     time.sleep(62.0)  # expires @ 60s
