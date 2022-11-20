@@ -4,8 +4,8 @@ setup(
     name='mwaacli',
     version='0.1.0',
     python_requires=">= 3.7",
-    requires=[
-        'git+https://github.com/apache/airflow-client-python@2.2.0#egg=apache-airflow-client',
+    install_requires=[
+        'apache-airflow-client',
         'botocore>=1.20.0',
         'boto3',
         'requests',
