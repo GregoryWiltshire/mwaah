@@ -20,8 +20,6 @@ Test locally using the following ssh tunnel configuration
 ```shell
 ssh -D 8080 -C -N  user@example.com
 ```
-
-## Setting up a new CLI session
 Create a client with proxy config session  
 ```python
 from mwaacli.mwaa import MWAACLI
@@ -31,6 +29,8 @@ cli = MWAACLI(
     proxies={'https': 'socks5://0:8080'}
 )
 ```
+
+## Setting up a new CLI session
 Create a client passing in your own session  
 ```python
 from mwaacli.mwaa import MWAACLI
@@ -52,7 +52,7 @@ print(cli.get_version())
 ```python
 date = datetime.now()
 run = DAGRun()._from_openapi_data(
-    dag_id=dag_id,
+    dag_id='example_dag_id',
     execution_date=date,
     dag_run_id="dag_run_id_example"+date.__str__(),
     conf={'key': 'val'},
