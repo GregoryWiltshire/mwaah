@@ -3,15 +3,15 @@ Python Client for running Apache Airflow CLI commands on AWS MWAA (Managed Workf
 https://docs.aws.amazon.com/mwaa/latest/userguide/airflow-cli-command-reference.html
 
 # (currently) Supported Apache Airflow CLI commands
-| Version | Command                  | Implemented | Integration Test |
-|---------|--------------------------|-------------|------------------|
-| v2.2.2  | dags list                |     ✅      |       ✅         |
-| v2.0+   | dags pause               |     ✅      |       ✅         |
-| v2.0+   | dags unpause             |     ✅      |       ✅         |
-| v2.0+   | dags show                |     ✅      |       ✅         |
-| v2.0+   | dags state               |     ✅      |       ✅         |
-| v2.0+   | dags trigger             |     ✅      |       ✅         |
-| v2.0+   | version                  |     ✅      |       ✅         |
+| Version | Command                  | API         | 
+|---------|--------------------------|-------------|
+| v2.2.2  | dags list                | get_dags    |
+| v2.0+   | dags pause               | pause_dag   |
+| v2.0+   | dags unpause             | unpause_dag |
+| v2.0+   | dags show                | show_dag    |
+| v2.0+   | dags state               | get_dag_state|
+| v2.0+   | dags trigger             | new_dagrun  |
+| v2.0+   | version                  | get_version |
 
 
 # Examples
