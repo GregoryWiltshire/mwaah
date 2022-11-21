@@ -92,7 +92,7 @@ class MWAACLI:
         self.post_command("""dags unpause '{}'""".format(dag_id))
 
     def get_version(self) -> str:
-        return self.post_command("""version""").stdout
+        return self.post_command('version').stdout
 
     # returns DOT representation of DAG
     def show_dag(self, dag_id) -> str:

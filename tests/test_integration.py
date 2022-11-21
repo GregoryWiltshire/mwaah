@@ -7,7 +7,7 @@ import pytest
 from airflow_client.client.model.dag_run import DAGRun
 from dotenv import load_dotenv
 
-from mwaacli.mwaa import MWAACLI
+from mwaacli import MWAACLI
 
 dag_list = None
 load_dotenv()
