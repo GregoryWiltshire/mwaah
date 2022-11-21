@@ -2,3 +2,6 @@
 .venv/
 .pytest_cache/
 mwaacli/__pycache__/
+dist/
+*.egg-info/
+*.egg
