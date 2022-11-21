@@ -22,7 +22,7 @@ ssh -D 8080 -C -N  user@example.com
 ```
 Create a client with proxy config session  
 ```python
-from mwaacli.mwaa import MWAACLI
+from mwaacli import MWAACLI
 cli = MWAACLI(
     'example-mwaa-environment',
     boto3.client('mwaa'),
@@ -33,7 +33,7 @@ cli = MWAACLI(
 ## Setting up a new CLI session
 Create a client passing in your own session  
 ```python
-from mwaacli.mwaa import MWAACLI
+from mwaacli import MWAACLI
 cli = MWAACLI(
     'example-mwaa-environment',
     boto3.client('mwaa', region_name='example-region-1')
