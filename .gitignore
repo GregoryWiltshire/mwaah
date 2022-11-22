@@ -1,5 +1,6 @@
 .tox/
 .venv/
+.env/
 .pytest_cache/
 mwaah/__pycache__/
 dist/

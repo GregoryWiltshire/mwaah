@@ -1,11 +1,11 @@
 [tool.isort]
 profile = "black"
-src_paths = ["mwaah", "test"]
+src_paths = ["mwaah", "tests"]
 honor_noqa = true
 
 [tool.pytest.ini_options]
 testpaths = [
-    "mwaa_client",
+    "mwaah",
     "tests",
 ]
 markers = [
@@ -15,14 +15,16 @@ markers = [
 
 [project]
 name = "mwaah"
-version = "0.1.0"
+dynamic = ["version"]
 authors = [
   { name="Gregory Wiltshire", email="mellon.greg@gmail.com" },
 ]
+license = {text = "MIT"}
 description = "Python Client for Apache CLI on AWS Managed Airflow"
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.7"
 classifiers = [
+    "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
