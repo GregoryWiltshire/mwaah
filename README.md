@@ -25,6 +25,7 @@ ssh -D 8080 -C -N  user@example.com
 Create a client with proxy config session  
 ```python
 from mwaah import MWAAH
+
 cli = MWAAH(
     'example-mwaa-environment',
     boto3.client('mwaa'),
@@ -52,6 +53,9 @@ print(cli.get_version())
 
 ## Triggering a New DAG Run
 ```python
+from airflow_client.client.model.dag_run import DAGRun
+from dateteim import datetime
+
 date = datetime.now()
 run = DAGRun()._from_openapi_data(
     dag_id='example_dag_id',
