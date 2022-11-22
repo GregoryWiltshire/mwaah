@@ -1,11 +1,11 @@
 [tool.isort]
 profile = "black"
-src_paths = ["mwaacli", "test"]
+src_paths = ["mwaah", "test"]
 honor_noqa = true
 
 [tool.pytest.ini_options]
 testpaths = [
-    "mwaacli",
+    "mwaa_client",
     "tests",
 ]
 markers = [
@@ -14,7 +14,7 @@ markers = [
 ]
 
 [project]
-name = "mwaacli"
+name = "mwaah"
 version = "0.0.1"
 authors = [
   { name="Gregory Wiltshire", email="mellon.greg@gmail.com" },
@@ -30,5 +30,9 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
 [project.urls]
-"Homepage" = "https://github.com/GregoryWiltshire/mwaacli-python"
+"Homepage" = "https://github.com/GregoryWiltshire/mwaah"

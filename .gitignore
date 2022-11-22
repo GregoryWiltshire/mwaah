@@ -1,7 +1,7 @@
 .tox/
 .venv/
 .pytest_cache/
-mwaacli/__pycache__/
+mwaah/__pycache__/
 dist/
 *.egg-info/
 *.egg

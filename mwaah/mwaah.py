@@ -8,7 +8,7 @@ import requests
 from airflow_client.client.model.dag_run import DAGRun
 from airflow_client.client.model.dag_state import DagState
 
-from mwaacli.model import DagList
+from .model import DagList
 
 
 class MWAAData:
@@ -27,7 +27,7 @@ class MWAAData:
         return json.loads(self.stdout)
 
 
-class MWAACLI:
+class MWAAH:
     def __init__(self, name, mwaa_client=None, proxies=None):
         if mwaa_client:
             self.client = mwaa_client

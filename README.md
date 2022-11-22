@@ -1,5 +1,7 @@
-# AWS MWAA (Managed Workflows for Apache Airflow) CLI - Python
+# AWS MWAA Helper (Managed Workflows for Apache Airflow) - Python
 Python Client for running Apache Airflow CLI commands on AWS MWAA (Managed Workflows for Apache Airflow) instances.  
+Built to give a client like experience for MWAA, utilizing the Apache Python Client objects.
+
 https://docs.aws.amazon.com/mwaa/latest/userguide/airflow-cli-command-reference.html
 
 # (currently) Supported Apache Airflow CLI commands
@@ -22,8 +24,8 @@ ssh -D 8080 -C -N  user@example.com
 ```
 Create a client with proxy config session  
 ```python
-from mwaacli import MWAACLI
-cli = MWAACLI(
+from mwaah import MWAAH
+cli = MWAAH(
     'example-mwaa-environment',
     boto3.client('mwaa'),
     proxies={'https': 'socks5://0:8080'}
@@ -33,8 +35,8 @@ cli = MWAACLI(
 ## Setting up a new CLI session
 Create a client passing in your own session  
 ```python
-from mwaacli import MWAACLI
-cli = MWAACLI(
+from mwaah import MWAAH
+cli = MWAAH(
     'example-mwaa-environment',
     boto3.client('mwaa', region_name='example-region-1')
 )

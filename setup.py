@@ -1,7 +1,7 @@
 from setuptools import find_packages, setup
 
 setup(
-    name='mwaacli',
+    name='mwaah',
     version='0.1.0',
     python_requires=">= 3.7",
     install_requires=[
@@ -17,6 +17,6 @@ setup(
     author='Gregory Wiltshire',
     author_email='mellon.greg@gmail.com',
     packages=find_packages(exclude=['tests']),  # Include all the python modules except `tests`.
-    url='https://github.com/GregoryWiltshire/mwaacli-python',
+    url='https://github.com/GregoryWiltshire/mwaah',
     description='Python Client for Apache CLI on AWS Managed Airflow',
 )
