@@ -1,5 +1,5 @@
 .tox/
-.venv/
+.m.getvenv/
 .env/
 .pytest_cache/
 mwaah/__pycache__/
