@@ -1,4 +1,4 @@
-# AWS MWAA Helper (Managed Workflows for Apache Airflow) - Python
+# AWS MWAA Helper (Managed Workflows for Apache Airflow)
 Python Client for running Apache Airflow CLI commands on AWS MWAA (Managed Workflows for Apache Airflow) instances.  
 Built to give a client like experience for MWAA, utilizing the Apache Python Client objects.
 
