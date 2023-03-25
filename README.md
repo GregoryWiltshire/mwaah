@@ -54,7 +54,7 @@ print(cli.get_version())
 ## Triggering a New DAG Run
 ```python
 from airflow_client.client.model.dag_run import DAGRun
-from dateteim import datetime
+from datetime import datetime
 
 date = datetime.now()
 run = DAGRun()._from_openapi_data(
